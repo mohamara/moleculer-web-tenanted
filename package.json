@@ -1,7 +1,7 @@
 {
-  "name": "moleculer-web",
-  "version": "0.10.7",
-  "description": "Official API Gateway service for Moleculer framework",
+  "name": "moleculer-web-tenanted",
+  "version": "0.1.0",
+  "description": "API Gateway service for Moleculer framework with detect tenants",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon examples/index.js",
@@ -27,9 +27,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/moleculerjs/moleculer-web.git"
+    "url": "https://github.com/mohamara/moleculer-web-tenanted.git"
   },
-  "author": "MoleculerJS",
+  "author": "Mohamara",
   "license": "MIT",
   "devDependencies": {
     "@sinonjs/fake-timers": "^8.0.1",
