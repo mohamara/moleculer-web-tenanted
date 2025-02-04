@@ -1,4 +1,4 @@
-declare module "moleculer-web" {
+declare module "moleculer-web-tenanted" {
 	import { IncomingMessage, ServerResponse } from "http";
 	import type {
 		ActionEndpoint,
@@ -11,13 +11,12 @@ declare module "moleculer-web" {
 		ServiceSchema,
 	} from "moleculer";
 	import { Errors } from "moleculer";
-	import { IParseOptions } from 'qs';
-	import type { Server as NetServer } from 'net';
-	import type { Server as TLSServer } from 'tls';
-	import type { Server as HttpServer } from 'http';
-	import type { Server as HttpsServer } from 'https';
-	import type { Http2SecureServer, Http2Server } from 'http2';
-
+	import { IParseOptions } from "qs";
+	import type { Server as NetServer } from "net";
+	import type { Server as TLSServer } from "tls";
+	import type { Server as HttpServer } from "http";
+	import type { Server as HttpsServer } from "https";
+	import type { Http2SecureServer, Http2Server } from "http2";
 
 	// RateLimit
 	export type generateRateLimitKey = (req: IncomingMessage) => string;
@@ -57,7 +56,11 @@ declare module "moleculer-web" {
 
 	export abstract class RateLimitStore {
 		resetTime: number;
-		constructor(clearPeriod: number, opts?: RateLimitSettings, broker?: ServiceBroker);
+		constructor(
+			clearPeriod: number,
+			opts?: RateLimitSettings,
+			broker?: ServiceBroker
+		);
 		inc(key: string): number | Promise<number>;
 	}
 
@@ -66,7 +69,11 @@ declare module "moleculer-web" {
 	}
 
 	class MemoryStore extends RateLimitStore {
-		constructor(clearPeriod: number, opts?: RateLimitSettings, broker?: ServiceBroker);
+		constructor(
+			clearPeriod: number,
+			opts?: RateLimitSettings,
+			broker?: ServiceBroker
+		);
 
 		/**
 		 * Increment the counter by key
@@ -97,13 +104,22 @@ declare module "moleculer-web" {
 			/**
 			 * The type option is used to determine what media type the middleware will parse
 			 */
-			type?: string | string[] | ((req: IncomingMessage) => any) | undefined;
+			type?:
+				| string
+				| string[]
+				| ((req: IncomingMessage) => any)
+				| undefined;
 
 			/**
 			 * The verify option, if supplied, is called as verify(req, res, buf, encoding),
 			 * where buf is a Buffer of the raw request body and encoding is the encoding of the request.
 			 */
-			verify?(req: IncomingMessage, res: ServerResponse, buf: Buffer, encoding: string): void;
+			verify?(
+				req: IncomingMessage,
+				res: ServerResponse,
+				buf: Buffer,
+				encoding: string
+			): void;
 		}
 
 		interface OptionsJson extends Options {
@@ -181,8 +197,8 @@ declare module "moleculer-web" {
 					fieldnameTruncated: boolean,
 					valTruncated: boolean,
 					encoding: string,
-					mimetype: string,
-				) => void,
+					mimetype: string
+				) => void
 			): this;
 			on(
 				event: "file",
@@ -191,8 +207,8 @@ declare module "moleculer-web" {
 					file: NodeJS.ReadableStream,
 					filename: string,
 					encoding: string,
-					mimetype: string,
-				) => void,
+					mimetype: string
+				) => void
 			): this;
 			on(event: "finish", callback: () => void): this;
 			on(event: "partsLimit", callback: () => void): this;
@@ -202,7 +218,11 @@ declare module "moleculer-web" {
 		}
 	}
 
-	type onEventBusboyConfig<T> = (busboy: busboy.Busboy, alias: T, service: Service) => void;
+	type onEventBusboyConfig<T> = (
+		busboy: busboy.Busboy,
+		alias: T,
+		service: Service
+	) => void;
 	type BusboyConfig<T> = busboy.BusboyConfig & {
 		onFieldsLimit?: T;
 		onFilesLimit?: T;
@@ -281,7 +301,9 @@ declare module "moleculer-web" {
 		 * path the file path that is being sent
 		 * stat the stat object of the file that is being sent
 		 */
-		setHeaders?: ((res: ServerResponse, path: string, stat: any) => any) | undefined;
+		setHeaders?:
+			| ((res: ServerResponse, path: string, stat: any) => any)
+			| undefined;
 	}
 
 	type AssetsConfig = {
@@ -381,14 +403,14 @@ declare module "moleculer-web" {
 		ctx: Context,
 		route: Route,
 		req: IncomingRequest,
-		res: GatewayResponse,
+		res: GatewayResponse
 	) => void;
 	type onAfterCall = (
 		ctx: Context,
 		route: Route,
 		req: IncomingRequest,
 		res: GatewayResponse,
-		data: any,
+		data: any
 	) => any;
 
 	/**
@@ -410,23 +432,36 @@ declare module "moleculer-web" {
 		(deferToNext: "route"): void;
 	}
 
-	type routeMiddleware = (req: IncomingRequest, res: GatewayResponse, next: NextFunction) => void;
+	type routeMiddleware = (
+		req: IncomingRequest,
+		res: GatewayResponse,
+		next: NextFunction
+	) => void;
 	type routeMiddlewareError = (
 		err: any,
 		req: IncomingRequest,
 		res: GatewayResponse,
-		next: NextFunction,
+		next: NextFunction
 	) => void;
 
 	type ETagFunction = (body: any) => string;
 	type AliasFunction = (
 		req: IncomingRequest,
 		res: GatewayResponse,
-		next?: (err?: any) => void,
+		next?: (err?: any) => void
 	) => void;
 	type AliasRouteSchema = {
 		type?: "call" | "multipart" | "stream" | string;
-		method?: "GET" | "POST" | "PUT" | "DELETE" | "*" | "HEAD" | "OPTIONS" | "PATCH" | string;
+		method?:
+			| "GET"
+			| "POST"
+			| "PUT"
+			| "DELETE"
+			| "*"
+			| "HEAD"
+			| "OPTIONS"
+			| "PATCH"
+			| string;
 		path?: string;
 		handler?: AliasFunction;
 		action?: string;
@@ -465,7 +500,11 @@ declare module "moleculer-web" {
 		 * In handlers, you must call the `res.end`. Otherwise, the request is unhandled.
 		 * @see https://moleculer.services/docs/0.14/moleculer-web.html#Error-handlers
 		 */
-		onError?: (req: IncomingRequest, res: ServerResponse, error: Error) => void;
+		onError?: (
+			req: IncomingRequest,
+			res: ServerResponse,
+			error: Error
+		) => void;
 		/**
 		 * The Moleculer-Web has a built-in rate limiter with a memory store.
 		 * @see https://moleculer.services/docs/0.14/moleculer-web.html#Rate-limiter
@@ -487,7 +526,11 @@ declare module "moleculer-web" {
 		 * @see https://moleculer.services/docs/0.14/moleculer-web.html#Aliases
 		 */
 		aliases?: {
-			[k: string]: string | AliasFunction | (AliasFunction | string)[] | AliasRouteSchema;
+			[k: string]:
+				| string
+				| AliasFunction
+				| (AliasFunction | string)[]
+				| AliasRouteSchema;
 		};
 		/**
 		 * To enable the support for authentication, you need to do something similar to what is describe in the Authorization paragraph.<br>
@@ -727,7 +770,7 @@ declare module "moleculer-web" {
 	export class IncomingRequest extends IncomingMessage {
 		$action: ActionSchema;
 		$alias: Alias;
-		$ctx: Context<{ req: IncomingMessage; res: ServerResponse; }>;
+		$ctx: Context<{ req: IncomingMessage; res: ServerResponse }>;
 		$endpoint: ActionEndpoint;
 		$next: any;
 		$params: any;
