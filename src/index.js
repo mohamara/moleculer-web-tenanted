@@ -149,6 +149,12 @@ module.exports = {
 
 				// Split URL & query params
 				let parsed = this.parseQueryString(req);
+				if (parsed.query.tenantType)
+					ctx.meta.tenantType = parsed.query.tenantType;
+				if (parsed.query.tenantName)
+					ctx.meta.tenantName = parsed.query.tenantName;
+				delete parsed.query.tenantType;
+				delete parsed.query.tenantName;
 				let url = parsed.url;
 
 				// Trim trailing slash
