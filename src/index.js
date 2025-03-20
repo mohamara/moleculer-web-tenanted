@@ -663,7 +663,7 @@ module.exports = {
 				if (userObject) {
 					this.logger.debug("Authenticated user", userObject);
 					ctx.meta.user = userObject.user;
-					ctx.meta.businessId = userObject.businessId;
+					ctx.meta.businessUser = userObject.businessUser;
 				} else {
 					this.logger.debug("Anonymous user");
 					ctx.meta.user = null;
